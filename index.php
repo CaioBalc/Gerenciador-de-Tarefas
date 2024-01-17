@@ -6,26 +6,6 @@ if (!isset($_SESSION["tasks"])) {
     $_SESSION["tasks"] = array();
 }
 
-if (isset($_GET["task_name"])) {
-    if($_GET["task_name"] != "") {
-        array_push($_SESSION["tasks"], $_GET["task_name"]);
-        unset($_GET["task_name"]);
-    }
-    else{
-        $_SESSION["message"] = "O capo nome da tarefa não pode ser vazio!";
-    }
-}
-
-if (isset($_GET["clear"])) {
-    unset($_SESSION["tasks"]);
-    unset($_GET["clear"]);
-}
-
-if(isset($_GET["key"])) {
-    array_splice($_SESSION["tasks"], $_GET["key"], 1);
-    unset($_GET["key"]);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -46,9 +26,16 @@ if(isset($_GET["key"])) {
         <h1>Gerenciador de Tarefas</h1>
     </div>
     <div class= "form">
-        <form action="" method="get">
+        <form action="task.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="insert" value="insert">
             <label for="task_name">Tarefa:</label>
             <input type="text" name="task_name" placeholder="Nome da Tarefa">
+            <label for="task_description">Descrição:</label>
+            <input type="text" name="task_description" placeholder="Descrição da Tarefa">
+            <label for="task_date">Data</label>
+            <input type="date" name="task_date" id="">
+            <label for="task_image">Imagem:</label>
+            <input type="file" name="task_image">
             <button type="submit">Cadastrar</button>
         </form>
         <?php
@@ -68,12 +55,12 @@ if(isset($_GET["key"])) {
 
                 foreach ($_SESSION["tasks"] as $key => $task) {
                     echo "<li>
-                            <span>$task</span>
+                            <a href='details.php?key=$key'>" . $task['task_name'] . "</a>
                             <button type='button' class='btn-clear' onclick='deletar$key()'>Remover</button>
                             <script>
                                 function deletar$key() {
                                     if (confirm('Confirmar remoção?')) {
-                                        window.location = 'http://127.0.0.1:8000/?key=$key';
+                                        window.location = 'http://127.0.0.1:8000/task.php?key=$key';
                                     }
                                     return false;
                                 }
@@ -84,11 +71,6 @@ if(isset($_GET["key"])) {
                 echo "</ul>";
             }
         ?>
-
-        <form action="" method="get">
-            <input type="hidden" name="clear" value="clear">
-            <button type="submit" class="btn-clear">Limpar Tarefas</button>
-        </form>
 
     </div>
     <div class="footer">
