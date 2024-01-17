@@ -7,12 +7,23 @@ if (!isset($_SESSION["tasks"])) {
 }
 
 if (isset($_GET["task_name"])) {
-    array_push($_SESSION["tasks"], $_GET["task_name"]);
-    unset($_GET["task_name"]);
+    if($_GET["task_name"] != "") {
+        array_push($_SESSION["tasks"], $_GET["task_name"]);
+        unset($_GET["task_name"]);
+    }
+    else{
+        $_SESSION["message"] = "O capo nome da tarefa não pode ser vazio!";
+    }
 }
 
 if (isset($_GET["clear"])) {
     unset($_SESSION["tasks"]);
+    unset($_GET["clear"]);
+}
+
+if(isset($_GET["key"])) {
+    array_splice($_SESSION["tasks"], $_GET["key"], 1);
+    unset($_GET["key"]);
 }
 
 ?>
@@ -40,6 +51,12 @@ if (isset($_GET["clear"])) {
             <input type="text" name="task_name" placeholder="Nome da Tarefa">
             <button type="submit">Cadastrar</button>
         </form>
+        <?php
+            if (isset ($_SESSION["message"])) {
+                echo "<p style='color: #ef5350';>" . $_SESSION['message'] . "</p>";
+                unset($_SESSION["message"]);
+            }
+        ?>
     </div>
     <div class="separator">
 
@@ -50,7 +67,18 @@ if (isset($_GET["clear"])) {
                 echo "<ul>";
 
                 foreach ($_SESSION["tasks"] as $key => $task) {
-                    echo "<li>$task</li>";
+                    echo "<li>
+                            <span>$task</span>
+                            <button type='button' class='btn-clear' onclick='deletar$key()'>Remover</button>
+                            <script>
+                                function deletar$key() {
+                                    if (confirm('Confirmar remoção?')) {
+                                        window.location = 'http://127.0.0.1:8000/?key=$key';
+                                    }
+                                    return false;
+                                }
+                            </script>
+                    </li>";
                 }
 
                 echo "</ul>";
