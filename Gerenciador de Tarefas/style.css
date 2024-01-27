@@ -201,3 +201,17 @@ a:hover {
     max-width: 100%;
     height: auto;
 }
+
+.alert-sucess {
+    background: #c5e1a5;
+    margin: 4px;
+    padding: 12px;
+    color: #7cb342;
+}
+
+.alert-error {
+    background: #ffab91;
+    margin: 4px;
+    padding: 12px;
+    color: #f4511e;
+}
